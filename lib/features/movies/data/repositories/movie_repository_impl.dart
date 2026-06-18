@@ -1,70 +1,80 @@
+import 'package:fpdart/fpdart.dart';
+import 'package:injectable/injectable.dart';
 import 'package:kinova/features/movies/data/models/movie_model.dart';
 import '../../../../core/network/dio_client.dart';
 import '../../../../core/network/error_handler.dart';
+import '../../../../core/error/failure.dart';
 import '../../domain/entities/movie.dart';
-import 'movie_repository.dart';
+import '../../domain/repositories/movie_repository.dart';
 
+@LazySingleton(as: MovieRepository)
 class MovieRepositoryImpl implements MovieRepository {
   final DioClient _dioClient;
 
   MovieRepositoryImpl(this._dioClient);
 
   @override
-  Future<List<Movie>> getPopularMovies({int page = 1}) async {
+  Future<Either<Failure, List<Movie>>> getPopularMovies({int page = 1}) async {
     try {
       final response = await _dioClient.dio.get(
         '/movie/popular',
         queryParameters: {'page': page},
       );
       final List<dynamic> results = response.data['results'];
-      return results.map((json) => MovieModel.fromJson(json)).toList();
+      final movies = results.map((json) => MovieModel.fromJson(json)).toList();
+      return Right(movies);
     } catch (e) {
-      throw Exception(ErrorHandler.handle(e));
+      return Left(ServerFailure(ErrorHandler.handle(e)));
     }
   }
 
-  Future<List<Movie>> searchMovies(String query) async {
+  @override
+  Future<Either<Failure, List<Movie>>> searchMovies(String query) async {
     try {
       final response = await _dioClient.dio.get(
         '/search/movie',
         queryParameters: {'query': query},
       );
       final results = response.data['results'] as List;
-      return results.map((json) => MovieModel.fromJson(json)).toList();
+      final movies = results.map((json) => MovieModel.fromJson(json)).toList();
+      return Right(movies);
     } catch (e) {
-      throw Exception('Axtarış zamanı xəta baş verdi');
+      return Left(ServerFailure('Axtarış zamanı xəta baş verdi'));
     }
   }
 
-  // YENİLİK: page parametri əlavə edildi
-  Future<List<Movie>> getTopRatedMovies({int page = 1}) async {
+  @override
+  Future<Either<Failure, List<Movie>>> getTopRatedMovies({int page = 1}) async {
     try {
       final response = await _dioClient.dio.get(
         '/movie/top_rated',
         queryParameters: {'page': page}, 
       );
       final results = response.data['results'] as List;
-      return results.map((json) => MovieModel.fromJson(json)).toList();
+      final movies = results.map((json) => MovieModel.fromJson(json)).toList();
+      return Right(movies);
     } catch (e) {
-      throw Exception('Top Rated filmlər yüklənərkən xəta baş verdi');
+      return Left(ServerFailure('Top Rated filmlər yüklənərkən xəta baş verdi'));
     }
   }
 
-  // YENİLİK: page parametri əlavə edildi
-  Future<List<Movie>> getUpcomingMovies({int page = 1}) async {
+  @override
+  Future<Either<Failure, List<Movie>>> getUpcomingMovies({int page = 1}) async {
     try {
       final response = await _dioClient.dio.get(
         '/movie/upcoming',
         queryParameters: {'page': page}, 
       );
       final results = response.data['results'] as List;
-      return results.map((json) => MovieModel.fromJson(json)).toList();
+      final movies = results.map((json) => MovieModel.fromJson(json)).toList();
+      return Right(movies);
     } catch (e) {
-      throw Exception('Upcoming filmlər yüklənərkən xəta baş verdi');
+      return Left(ServerFailure('Upcoming filmlər yüklənərkən xəta baş verdi'));
     }
   }
 
-  Future<Map<String, dynamic>> getMovieExtras(int movieId) async {
+  @override
+  Future<Either<Failure, Map<String, dynamic>>> getMovieExtras(int movieId) async {
     try {
       final response = await _dioClient.dio.get(
         '/movie/$movieId',
@@ -80,12 +90,12 @@ class MovieRepositoryImpl implements MovieRepository {
 
       final cast = data['credits']['cast'] as List;
 
-      return {
+      return Right({
         'trailerKey': trailer?['key'],
         'cast': cast.take(10).toList(),
-      };
+      });
     } catch (e) {
-      throw Exception('Əlavə məlumatlar yüklənmədi');
+      return Left(ServerFailure('Əlavə məlumatlar yüklənmədi'));
     }
   }
 }

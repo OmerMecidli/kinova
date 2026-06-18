@@ -19,8 +19,11 @@ class MovieExtrasCubit extends Cubit<MovieExtrasState> {
   Future<void> loadExtras(int movieId) async {
     emit(ExtrasLoading());
     try {
-      final extras = await _repository.getMovieExtras(movieId);
-      emit(ExtrasLoaded(extras['trailerKey'], extras['cast']));
+      final extrasResult = await _repository.getMovieExtras(movieId);
+      extrasResult.fold(
+        (_) => emit(ExtrasInitial()),
+        (extras) => emit(ExtrasLoaded(extras['trailerKey'], extras['cast'])),
+      );
     } catch (e) {
       emit(ExtrasInitial()); // Xəta olsa da səhifə çökməsin deyə initiala qaytarırıq
     }

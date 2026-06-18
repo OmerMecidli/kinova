@@ -1,31 +1,36 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 import 'package:kinova/features/movies/domain/entities/movie.dart';
-
-import '../../data/repositories/favorite_repository.dart';
+import '../../../../core/usecases/usecase.dart';
+import '../../domain/usecases/favorite_usecases.dart';
 
 class FavoritesState {
   final List<Movie> favorites;
   FavoritesState(this.favorites);
 }
 
+@injectable
 class FavoritesCubit extends Cubit<FavoritesState> {
-  final FavoriteRepository _repository;
+  final GetFavoritesUseCase _getFavorites;
+  final ToggleFavoriteUseCase _toggleFavorite;
 
-  FavoritesCubit(this._repository) : super(FavoritesState([])) {
-    // Cubit yaranan kimi yaddaşdakı filmləri çəkirik
+  FavoritesCubit(this._getFavorites, this._toggleFavorite) : super(FavoritesState([])) {
     loadFavorites();
   }
 
   void loadFavorites() {
-    emit(FavoritesState(_repository.getFavorites()));
+    final result = _getFavorites(NoParams());
+    result.fold(
+      (failure) => emit(FavoritesState([])),
+      (movies) => emit(FavoritesState(movies)),
+    );
   }
 
   Future<void> toggleFavorite(Movie movie) async {
-    await _repository.toggleFavorite(movie);
-    loadFavorites(); // Əməliyyatdan sonra siyahını yeniləyirik
+    await _toggleFavorite(ToggleFavoriteParams(movie: movie));
+    loadFavorites();
   }
 
-  // Müəyyən bir filmin siyahıda olub-olmadığını yoxlayır
   bool isFavorite(int movieId) {
     return state.favorites.any((movie) => movie.id == movieId);
   }

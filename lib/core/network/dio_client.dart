@@ -1,7 +1,9 @@
 import 'package:dio/dio.dart';
+import 'package:injectable/injectable.dart';
 import '../constants/api_constants.dart';
 import 'api_interceptor.dart';
 
+@lazySingleton
 class DioClient {
   late final Dio _dio;
 
