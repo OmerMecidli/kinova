@@ -1,4 +1,8 @@
 {
   "@@locale": "az",
-  "appTitle": "Kinova Kino Proqramı"
+  "appTitle": "Kinova Kino Proqramı",
+  "@appTitle": {
+    "description": "The application title displayed in the app UI",
+    "type": "text"
+  }
 }
