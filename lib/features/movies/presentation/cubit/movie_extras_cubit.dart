@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../data/repositories/movie_repository_impl.dart';
+import 'package:injectable/injectable.dart';
+import '../../domain/repositories/movie_repository.dart';
 
 abstract class MovieExtrasState {}
 
@@ -11,8 +12,9 @@ class ExtrasLoaded extends MovieExtrasState {
   ExtrasLoaded(this.trailerKey, this.cast);
 }
 
+@injectable
 class MovieExtrasCubit extends Cubit<MovieExtrasState> {
-  final MovieRepositoryImpl _repository;
+  final MovieRepository _repository;
 
   MovieExtrasCubit(this._repository) : super(ExtrasInitial());
 

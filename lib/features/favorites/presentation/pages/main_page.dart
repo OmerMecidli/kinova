@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kinova/features/search/presentation/pages/search_page.dart';
-import '../../../../core/theme/app_colors.dart';
 import '../../../favorites/presentation/pages/favorites_page.dart';
 import '../../../movies/presentation/pages/movies_page.dart';
 
@@ -30,30 +29,33 @@ class _MainPageState extends State<MainPage> {
         children: _pages,
       ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: AppColors.background, // Qara fon
-        selectedItemColor: Colors.white, // Seçilmiş tabın rəngi
-        unselectedItemColor: AppColors.textSecondary, // Seçilməmişlərin rəngi
+        backgroundColor: Colors.black.withValues(alpha: 0.9), // Netflix-style translucent black
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.grey.shade600,
+        selectedFontSize: 12,
+        unselectedFontSize: 12,
         currentIndex: _currentIndex,
         type: BottomNavigationBarType.fixed,
+        elevation: 0,
         onTap: (index) {
           setState(() {
-            _currentIndex = index; // Taba klikləyəndə indeksi dəyişirik
+            _currentIndex = index;
           });
         },
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
-            activeIcon: Icon(Icons.home),
+            icon: Padding(padding: EdgeInsets.only(bottom: 4), child: Icon(Icons.home_outlined)),
+            activeIcon: Padding(padding: EdgeInsets.only(bottom: 4), child: Icon(Icons.home)),
             label: 'Ana Səhifə',
           ),
-          BottomNavigationBarItem( // Yeni Tab
-            icon: Icon(Icons.search_outlined),
-            activeIcon: Icon(Icons.search),
+          BottomNavigationBarItem(
+            icon: Padding(padding: EdgeInsets.only(bottom: 4), child: Icon(Icons.search_outlined)),
+            activeIcon: Padding(padding: EdgeInsets.only(bottom: 4), child: Icon(Icons.search)),
             label: 'Axtarış',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.video_library_outlined),
-            activeIcon: Icon(Icons.video_library),
+            icon: Padding(padding: EdgeInsets.only(bottom: 4), child: Icon(Icons.video_library_outlined)),
+            activeIcon: Padding(padding: EdgeInsets.only(bottom: 4), child: Icon(Icons.video_library)),
             label: 'Siyahım',
           ),
         ],

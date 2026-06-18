@@ -3,6 +3,7 @@ import 'package:kinova/features/favorites/presentation/pages/main_page.dart';
 import '../../features/movies/domain/entities/movie.dart';
 import '../../features/movies/presentation/pages/movie_details_page.dart';
 import '../../features/splash/presentation/pages/splash_page.dart'; // Əlavə etdik
+import '../../features/movies/presentation/pages/actor_details_page.dart';
 
 class AppRouter {
   static final router = GoRouter(
@@ -23,12 +24,18 @@ class AppRouter {
       GoRoute(
         path: '/details',
         builder: (context, state) {
-          // BURA DƏYİŞDİ: Göndərdiyimiz Map-i tuturuq
           final data = state.extra as Map<String, dynamic>;
           final movie = data['movie'] as Movie;
           final heroTag = data['heroTag'] as String;
           
           return MovieDetailsPage(movie: movie, heroTag: heroTag);
+        },
+      ),
+      GoRoute(
+        path: '/actor',
+        builder: (context, state) {
+          final actorId = state.extra as int;
+          return ActorDetailsPage(actorId: actorId);
         },
       ),
     ],

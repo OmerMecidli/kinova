@@ -6,10 +6,11 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:kinova/core/theme/app_theme.dart';
 import 'package:kinova/features/favorites/presentation/cubit/favorites_cubit.dart';
 import 'package:kinova/features/search/presentation/cubit/search_cubit.dart';
-
+import 'package:kinova/features/movies/presentation/cubit/genres_cubit.dart';
 import 'core/di/injection.dart';
 import 'core/routing/app_router.dart';
 import 'features/movies/presentation/cubit/movies_cubit.dart';
+import 'features/movies/presentation/cubit/ratings_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,11 +30,17 @@ class MyApp extends StatelessWidget {
         BlocProvider<MoviesCubit>(
           create: (_) => getIt<MoviesCubit>()..loadAllMovies(),
         ),
+        BlocProvider<GenresCubit>(
+          create: (_) => getIt<GenresCubit>()..loadGenres(),
+        ),
         BlocProvider<FavoritesCubit>(
           create: (_) => getIt<FavoritesCubit>(),
         ),
         BlocProvider<SearchCubit>(
           create: (_) => getIt<SearchCubit>(),
+        ),
+        BlocProvider<RatingsCubit>(
+          create: (_) => getIt<RatingsCubit>(),
         ),
       ],
       child: MaterialApp.router(
